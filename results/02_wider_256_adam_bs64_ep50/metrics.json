@@ -1,0 +1,9 @@
+{
+  "training_accuracy": 1.0,
+  "validation_accuracy": 0.9819166660308838,
+  "training_loss": 7.339112926274538e-07,
+  "validation_loss": 0.14306007325649261,
+  "best_validation_accuracy": 0.9820833206176758,
+  "best_validation_epoch": 49,
+  "training_seconds": 204.35539260000223
+}

@@ -1,0 +1,18 @@
+{
+  "hidden_layers": 1,
+  "hidden_nodes": "[128]",
+  "optimizer": "Adam",
+  "batch_size": 64,
+  "epochs": 50,
+  "learning_rate": 0.001,
+  "activation": "relu",
+  "output_activation": "softmax",
+  "seed": 42,
+  "validation_fraction": 0.2,
+  "train_samples": 48000,
+  "validation_samples": 12000,
+  "test_samples": 10000,
+  "split_sha256": "7d8d188ac2f6cc28c60553eab4aa9148c3d37ee2dd10e551ccc38124500c943c",
+  "parameter_count": 101770,
+  "hidden_1_nodes": 128
+}

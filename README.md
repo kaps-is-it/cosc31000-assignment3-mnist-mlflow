@@ -26,6 +26,8 @@ python mnist_experiments.py --owner kaps-is-it
 
 The official DagsHub client opens its authentication flow if needed. Sign in to the account that owns the repository. Do not put tokens or passwords in the Python file, report or Git repository. The repository is created by `dagshub.init()` if it does not already exist.
 
+If a connection interrupts the pipeline after a run has finished, repeat the command with `--resume` and the same output directory. It reuses completed runs only after checking their logged metrics and saved model; unfinished configurations are trained again. On Windows, the script uses UTF-8 output so MLflow's run-link messages also work when output is redirected to a log file.
+
 To rehearse without DagsHub:
 
 ```bash

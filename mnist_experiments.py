@@ -10,7 +10,13 @@ import json
 import os
 from pathlib import Path
 import platform
+import sys
 import time
+
+# MLflow prints Unicode run links; Windows redirected output may use cp1252.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Keep downloaded datasets and temporary files inside this project.
 os.environ.setdefault("KERAS_HOME", str(Path(__file__).resolve().parent / ".keras"))
@@ -146,6 +152,8 @@ def main():
     parser.add_argument("--experiment", default=EXPERIMENT_NAME)
     parser.add_argument("--output-dir", default="results")
     parser.add_argument("--local", action="store_true")
+    parser.add_argument("--resume", action="store_true",
+                        help="Reuse verified completed runs and their local saved files.")
     parser.add_argument("--smoke-test", action="store_true",
                         help="One short rehearsal; never used for reported results.")
     args = parser.parse_args()
@@ -162,6 +170,26 @@ def main():
     configs = [dict(CONFIGS[0], epochs=2, name="smoke_test")] if args.smoke_test else CONFIGS
     results = []
     for config in configs:
+        run_dir = output / config["name"]
+        if args.resume and (run_dir / "metrics.json").exists() and (run_dir / "final_model.keras").exists():
+            client = MlflowClient()
+            experiment = client.get_experiment_by_name(args.experiment)
+            matches = client.search_runs([experiment.experiment_id],
+                filter_string=f"tags.mlflow.runName = '{config['name']}' and attributes.status = 'FINISHED'")
+            if matches:
+                completed = matches[0]
+                verify_run(completed.info.run_id, config, config["epochs"])
+                final = json.loads((run_dir / "metrics.json").read_text())
+                for key in ["training_accuracy", "validation_accuracy", "training_loss", "validation_loss"]:
+                    assert np.isclose(final[key], completed.data.metrics[key])
+                results.append({"run_name": config["name"], "run_id": completed.info.run_id,
+                                "hidden_layers": len(config["nodes"]), "hidden_nodes": config["nodes"],
+                                "optimizer": config["optimizer"], "batch_size": config["batch_size"],
+                                "epochs": config["epochs"], **final})
+                print(f"Reusing verified completed run {config['name']}", flush=True)
+                (output / "results.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+                pd.DataFrame(results).to_csv(output / "comparison.csv", index=False)
+                continue
         tf.keras.backend.clear_session()
         tf.keras.utils.set_random_seed(SEED)
         model = build_model(config)

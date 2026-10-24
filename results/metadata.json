@@ -1,0 +1,30 @@
+{
+  "tracking_uri": "https://dagshub.com/kaps-is-it/cosc31000-assignment3-mnist-mlflow.mlflow",
+  "experiment_name": "Assignment3_MNIST",
+  "best_run": {
+    "run_name": "02_wider_256_adam_bs64_ep50",
+    "run_id": "555c70672bb44f23bce2085c06e89952",
+    "hidden_layers": 1,
+    "hidden_nodes": [
+      256
+    ],
+    "optimizer": "Adam",
+    "batch_size": 64,
+    "epochs": 50,
+    "training_accuracy": 1.0,
+    "validation_accuracy": 0.9819166660308838,
+    "training_loss": 7.339112926274538e-07,
+    "validation_loss": 0.14306007325649261,
+    "best_validation_accuracy": 0.9820833206176758,
+    "best_validation_epoch": 49,
+    "training_seconds": 204.35539260000223
+  },
+  "test_accuracy": 0.9811999797821045,
+  "test_loss": 0.1344350129365921,
+  "selection_rule": "Highest final validation accuracy; lowest final validation loss breaks ties",
+  "python_version": "3.12.14",
+  "tensorflow_version": "2.19.1",
+  "keras_version": "3.10.0",
+  "mlflow_version": "2.22.2",
+  "smoke_test": false
+}
